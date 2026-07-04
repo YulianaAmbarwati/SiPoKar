@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiPoKar - Administrator Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="d-flex">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-mark"><i class="fa-solid fa-graduation-cap text-white"></i></div>
+                <div>
+                    <h4 class="fw-bold mb-0 text-white" style="font-size:1.05rem;">SiPoKar</h4>
+                    <small>Administrator Hub</small>
+                </div>
+            </div>
+            <div class="menu-section-label">Menu Utama</div>
+            <ul class="list-unstyled components">
+                <li class="active" id="nav-dash"><a href="#" onclick="switchAdminTab('dash')"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            </ul>
+            <div class="menu-section-label">Manajemen</div>
+            <ul class="list-unstyled components">
+                <li id="nav-student"><a href="#" onclick="switchAdminTab('student')"><i class="fa-solid fa-user-graduate"></i> Kelola Siswa</a></li>
+                <li id="nav-rule"><a href="#" onclick="switchAdminTab('rule')"><i class="fa-solid fa-gavel"></i> Master Aturan Poin</a></li>
+                <li id="nav-user"><a href="#" onclick="switchAdminTab('user')"><i class="fa-solid fa-users-gear"></i> Manajemen User</a></li>
+                <li><a href="#" onclick="handleSessionLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar Hub</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="sidebar-school-card">
+                    <i class="fa-solid fa-school"></i>
+                    <div>
+                        <small>Tahun Ajaran 2025/2026</small>
+                        <strong>SMP Harapan Bangsa</strong>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dynamic Content Panel Workspace -->
+        <div class="flex-grow-1 p-4 app-main-content" style="max-height: 100vh; overflow-y: auto;">
+
+            <!-- Navbar Header Tracker -->
+            <div class="app-navbar d-flex justify-content-between align-items-center mb-4 fade-in-up">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="btn btn-light" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="navbar-search d-none d-md-block">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Cari sesuatu...">
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="navbar-datetime d-none d-lg-block">
+                        <strong id="navbarClock">--:--</strong>
+                        <span id="navbarDate">Memuat tanggal...</span>
+                    </div>
+                    <div class="dropdown">
+                        <button class="navbar-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="ping-dot"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2" style="border-radius:14px; min-width:260px;">
+                            <li class="px-2 py-1 small fw-bold text-muted text-uppercase" style="font-size:0.68rem;">Notifikasi Sistem</li>
+                            <li><a class="dropdown-item rounded-3 small py-2" href="#">Pantau data terbaru pada tab Kelola Siswa</a></li>
+                            <li><a class="dropdown-item rounded-3 small py-2" href="#">Cek rekam kasus pada Ringkasan Eksekutif</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <div class="navbar-profile" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-initial" id="adminAvatarInitial">ZA</div>
+                            <div class="profile-meta d-none d-md-block">
+                                <strong id="adminGreetingLabel">Selamat Hari</strong>
+                                <small>Administrator</small>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-muted small d-none d-md-block"></i>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2" style="border-radius:14px;">
+                            <li><a class="dropdown-item rounded-3 small py-2" href="#" onclick="handleSessionLogout()"><i class="fa-solid fa-right-from-bracket me-2"></i>Keluar Hub</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB CONTENT: DASHBOARD SUMMARY ================= -->
+            <div id="tab-dash" class="admin-panel-tab fade-in-up">
+                <h3 class="fw-bold text-dark mb-4">Ringkasan Eksekutif Sistem</h3>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card card-custom stat-accent p-3 bg-white text-dark fade-in-up">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <small class="text-muted text-uppercase fw-bold">Total Siswa Terdaftar</small>
+                                    <h2 class="fw-bold text-primary mt-2 mb-0" id="stat-total-students">0</h2>
+                                </div>
+                                <div class="stat-icon-badge bg-soft-primary"><i class="fa-solid fa-user-graduate"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card card-custom stat-accent accent-success p-3 bg-white text-dark fade-in-up">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <small class="text-muted text-uppercase fw-bold">Butir Regulasi Poin</small>
+                                    <h2 class="fw-bold text-success mt-2 mb-0" id="stat-total-rules">0</h2>
+                                </div>
+                                <div class="stat-icon-badge bg-soft-success"><i class="fa-solid fa-gavel"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card card-custom stat-accent accent-info p-3 bg-white text-dark fade-in-up">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <small class="text-muted text-uppercase fw-bold">Pengguna Aktif Sistem</small>
+                                    <h2 class="fw-bold text-info mt-2 mb-0" id="stat-total-users">0</h2>
+                                </div>
+                                <div class="stat-icon-badge bg-soft-info"><i class="fa-solid fa-users-gear"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card card-custom stat-accent accent-danger p-3 bg-white text-dark fade-in-up">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <small class="text-muted text-uppercase fw-bold">Total Rekam Kasus</small>
+                                    <h2 class="fw-bold text-danger mt-2 mb-0" id="stat-total-records">0</h2>
+                                </div>
+                                <div class="stat-icon-badge bg-soft-danger"><i class="fa-solid fa-folder-open"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Monitoring Dynamic Activity Logger -->
+                <div class="card card-custom p-4">
+                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-wave-square me-2 text-primary"></i>Log Aktivitas Pencatatan Terakhir</h5>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Waktu Kejadian</th>
+                                    <th>Siswa</th>
+                                    <th>Kategori</th>
+                                    <th>Deskripsi Pelanggaran / Prestasi</th>
+                                    <th>Nilai</th>
+                                    <th>Petugas Input</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminLiveLogBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB CONTENT: KELOLA SISWA (CRUD) ================= -->
+            <div id="tab-student" class="admin-panel-tab fade-in-up" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user-graduate me-2 text-primary"></i>Registrasi Peserta Didik</h4>
+                    <button class="btn btn-primary btn-sm fw-semibold" onclick="launchStudentModal()"><i class="fa-solid fa-plus me-1"></i> Tambah Siswa Baru</button>
+                </div>
+
+                <div class="card card-custom p-3 mb-3">
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <input type="text" id="searchStudentInput" class="form-control" placeholder="Cari nama siswa atau NISN secara real-time..." onkeyup="renderStudentCRUDTable()">
+                        </div>
+                        <div class="col-md-4">
+                            <select id="filterClassSelect" class="form-select" onchange="renderStudentCRUDTable()">
+                                <option value="">Semua Kelas</option>
+                                <option value="VII-A">Kelas VII-A</option>
+                                <option value="VIII-A">Kelas VIII-A</option>
+                                <option value="IX-A">Kelas IX-A</option>
+                                <option value="IX-B">Kelas IX-B</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-custom p-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>NISN</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>Rombel Kelas</th>
+                                    <th>Akumulasi Skor</th>
+                                    <th>Status Karakter</th>
+                                    <th class="text-center">Aksi Operasional</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentCRUDTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB CONTENT: MASTER ATURAN POIN ================= -->
+            <div id="tab-rule" class="admin-panel-tab fade-in-up" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold text-dark mb-0"><i class="fa-solid fa-gavel me-2 text-success"></i>Konfigurasi Aturan Poin Pelanggaran & Prestasi</h4>
+                    <button class="btn btn-success btn-sm fw-semibold" onclick="launchRuleModal()"><i class="fa-solid fa-plus me-1"></i> Tambah Butir Aturan</button>
+                </div>
+                <div class="card card-custom p-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Kode ID</th>
+                                    <th>Tipe Dokumen</th>
+                                    <th>Deskripsi Butir Peraturan</th>
+                                    <th>Bobot Poin</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ruleCRUDTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB CONTENT: MANAJEMEN USER ================= -->
+            <div id="tab-user" class="admin-panel-tab fade-in-up" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold text-dark mb-0"><i class="fa-solid fa-users-gear me-2 text-info"></i>Manajemen Hak Akses Pengguna</h4>
+                    <button class="btn btn-info text-white btn-sm fw-semibold" onclick="launchUserModal()"><i class="fa-solid fa-plus me-1"></i> Daftarkan User Baru</button>
+                </div>
+                <div class="card card-custom p-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nama Pengguna</th>
+                                    <th>Username / NISN</th>
+                                    <th>Hak Akses Peran</th>
+                                    <th>Kata Sandi Terdaftar</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userCRUDTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= MODAL DIALOGS ENGINE AREA ================= -->
+    <!-- Modal Student Form -->
+    <div class="modal fade" id="studentFormModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" id="coreStudentForm" onsubmit="saveStudentEntity(event)" novalidate>
+                <div class="modal-header">
+                    <h5 class="fw-bold modal-title" id="studentModalTitle">Tambah Data Siswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editStudentFlag">
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Nomor Induk Siswa Nasional (NISN)</label>
+                        <input type="text" id="modalStudentNisn" class="form-control" required pattern="^[0-9]{10}$" placeholder="Contoh: 0098765431">
+                        <div class="invalid-feedback">Wajib diisi berupa angka 10 digit.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Nama Lengkap Siswa</label>
+                        <input type="text" id="modalStudentName" class="form-control" required placeholder="Ketik nama lengkap siswa">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Rombongan Belajar (Kelas)</label>
+                        <select id="modalStudentClass" class="form-select" required>
+                            <option value="VII-A">VII-A</option>
+                            <option value="VIII-A">VIII-A</option>
+                            <option value="IX-A">IX-A</option>
+                            <option value="IX-B">IX-B</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary px-4">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Rule Form -->
+    <div class="modal fade" id="ruleFormModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" id="coreRuleForm" onsubmit="saveRuleEntity(event)" novalidate>
+                <div class="modal-header">
+                    <h5 class="fw-bold modal-title" id="ruleModalTitle">Tambah Butir Peraturan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editRuleFlag">
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Kode Aturan</label>
+                        <input type="text" id="modalRuleId" class="form-control" required placeholder="Contoh: P005 / L008">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Kategori Aturan</label>
+                        <select id="modalRuleType" class="form-select" required>
+                            <option value="prestasi">Prestasi (Penambahan Poin)</option>
+                            <option value="pelanggaran">Pelanggaran (Pengurangan Poin)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Deskripsi Butir Aturan</label>
+                        <input type="text" id="modalRuleName" class="form-control" required placeholder="Ketik isi bunyi peraturan">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Bobot Poin</label>
+                        <input type="number" id="modalRulePoints" class="form-control" required min="1" placeholder="Contoh: 15">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-success px-4">Simpan Aturan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal User Form -->
+    <div class="modal fade" id="userFormModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" id="coreUserForm" onsubmit="saveUserEntity(event)" novalidate>
+                <div class="modal-header">
+                    <h5 class="fw-bold modal-title" id="userModalTitle">Registrasi Akun Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editUserFlag">
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Nama Lengkap Pemilik Akun</label>
+                        <input type="text" id="modalUserName" class="form-control" required placeholder="Contoh: Budi Gunawan, S.Pd">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Username / Pengenal Masuk</label>
+                        <input type="text" id="modalUserIdentifier" class="form-control" required placeholder="Ketik username login">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Hak Peran Otoritas</label>
+                        <select id="modalUserRole" class="form-select" required onchange="toggleUserRoleFields()">
+                            <option value="admin">Admin Utama</option>
+                            <option value="gurubk">Guru Bimbingan Konseling (BK)</option>
+                            <option value="siswa">Siswa Terintegrasi</option>
+                            <option value="orangtua">Orang Tua / Wali</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="userClassField" style="display:none;">
+                        <label class="form-label fw-medium">Rombongan Belajar (Kelas)</label>
+                        <select id="modalUserClass" class="form-select">
+                            <option value="VII-A">VII-A</option>
+                            <option value="VIII-A">VIII-A</option>
+                            <option value="IX-A">IX-A</option>
+                            <option value="IX-B">IX-B</option>
+                        </select>
+                        <div class="form-text">Otomatis membuat/memperbarui profil poin karakter siswa terkait.</div>
+                    </div>
+                    <div class="mb-3" id="userChildField" style="display:none;">
+                        <label class="form-label fw-medium">Anak yang Diawasi (NISN)</label>
+                        <select id="modalUserChildNisn" class="form-select"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Kata Sandi Rahasia</label>
+                        <input type="text" id="modalUserPassword" class="form-control" required placeholder="Ketik password sandi akun">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-info text-white px-4">Simpan Akun</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/db.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const session = JSON.parse(localStorage.getItem('sipokar_session'));
+            if (!session || session.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('adminGreetingLabel').innerText = `${getTimeGreeting()}, ${session.name}`;
+            document.getElementById('adminAvatarInitial').innerText = session.initial;
+            
+            refreshDashboardMetrics();
+            renderLiveLogTable();
+        });
+
+        function switchAdminTab(target) {
+            document.querySelectorAll('.admin-panel-tab').forEach(tab => tab.style.display = 'none');
+            document.querySelectorAll('#sidebar ul.components li').forEach(li => li.classList.remove('active'));
+            
+            document.getElementById(`tab-${target}`).style.display = 'block';
+            document.getElementById(`nav-${target}`).classList.add('active');
+
+            if (target === 'dash') { refreshDashboardMetrics(); renderLiveLogTable(); }
+            else if (target === 'student') { renderStudentCRUDTable(); }
+            else if (target === 'rule') { renderRuleCRUDTable(); }
+            else if (target === 'user') { renderUserCRUDTable(); }
+        }
+
+        function refreshDashboardMetrics() {
+            const s = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const r = JSON.parse(localStorage.getItem('sipokar_rules')) || [];
+            const u = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+            const rec = JSON.parse(localStorage.getItem('sipokar_records')) || [];
+
+            document.getElementById('stat-total-students').innerText = s.length;
+            document.getElementById('stat-total-rules').innerText = r.length;
+            document.getElementById('stat-total-users').innerText = u.length;
+            document.getElementById('stat-total-records').innerText = rec.length;
+        }
+
+        function renderLiveLogTable() {
+            const records = JSON.parse(localStorage.getItem('sipokar_records')) || [];
+            const students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const tbody = document.getElementById('adminLiveLogBody');
+            
+            tbody.innerHTML = records.slice(-5).reverse().map(rec => {
+                const stu = students.find(s => s.nisn === rec.nisn);
+                return `<tr>
+                    <td class="fw-medium">${rec.date}</td>
+                    <td><div class="fw-bold">${stu ? stu.name : 'Data Terhapus'}</div><small class="text-muted">NISN: ${rec.nisn}</small></td>
+                    <td><span class="badge ${rec.type === 'prestasi' ? 'bg-success' : 'bg-danger'}">${rec.type.toUpperCase()}</span></td>
+                    <td><div class="fw-medium">${rec.ruleName}</div><small class="text-muted">${rec.note}</small></td>
+                    <td class="fw-bold ${rec.type === 'prestasi' ? 'text-success' : 'text-danger'}">${rec.type === 'prestasi' ? '+' : '-'}${rec.points}</td>
+                    <td><small class="text-secondary">${rec.inputBy}</small></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ================= CRUD ENGINES: SISWA =================
+        function renderStudentCRUDTable() {
+            const students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const search = document.getElementById('searchStudentInput').value.toLowerCase();
+            const classFilter = document.getElementById('filterClassSelect').value;
+            const tbody = document.getElementById('studentCRUDTableBody');
+
+            let filtered = students.filter(s => {
+                const matchSearch = s.name.toLowerCase().includes(search) || s.nisn.includes(search);
+                const matchClass = classFilter === '' || s.class === classFilter;
+                return matchSearch && matchClass;
+            });
+
+            tbody.innerHTML = filtered.map(s => `
+                <tr>
+                    <td class="fw-medium">${s.nisn}</td>
+                    <td class="fw-bold text-dark">${s.name}</td>
+                    <td><span class="badge bg-light text-dark border px-2 py-1.5">${s.class}</span></td>
+                    <td class="fw-bold text-primary">${s.points} Poin</td>
+                    <td><span class="badge ${getStatusBadgeClass(s.status)}">${s.status}</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick="loadEditStudent('${s.nisn}')"><i class="fa-solid fa-user-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteStudentEntity('${s.nisn}')"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function launchStudentModal() {
+            document.getElementById('coreStudentForm').reset();
+            document.getElementById('coreStudentForm').classList.remove('was-validated');
+            document.getElementById('editStudentFlag').value = '';
+            document.getElementById('modalStudentNisn').disabled = false;
+            document.getElementById('studentModalTitle').innerText = 'Tambah Data Siswa';
+            new bootstrap.Modal(document.getElementById('studentFormModal')).show();
+        }
+
+        function loadEditStudent(nisn) {
+            const students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const s = students.find(item => item.nisn === nisn);
+            if (s) {
+                document.getElementById('editStudentFlag').value = s.nisn;
+                document.getElementById('modalStudentNisn').value = s.nisn;
+                document.getElementById('modalStudentNisn').disabled = true;
+                document.getElementById('modalStudentName').value = s.name;
+                document.getElementById('modalStudentClass').value = s.class;
+                document.getElementById('studentModalTitle').innerText = 'Ubah Berkas Siswa';
+                new bootstrap.Modal(document.getElementById('studentFormModal')).show();
+            }
+        }
+
+        function saveStudentEntity(e) {
+            e.preventDefault();
+            const form = document.getElementById('coreStudentForm');
+            if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
+
+            let students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const flag = document.getElementById('editStudentFlag').value;
+            const nisn = document.getElementById('modalStudentNisn').value;
+            const name = document.getElementById('modalStudentName').value;
+            const cls = document.getElementById('modalStudentClass').value;
+
+            let users = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+
+            if (flag === '') {
+                // Insert Mode
+                if(students.some(item => item.nisn === nisn)) {
+                    showToastNotification('Gagal! Kode NISN sudah terdaftar dalam pangkalan data.', 'danger');
+                    return;
+                }
+                students.push({ nisn, name, class: cls, points: 100, status: calculateCharacterStatus(100) });
+
+                // SYNC: otomatis buat akun login siswa jika belum ada di Manajemen User
+                if (!users.some(u => u.nisn === nisn)) {
+                    const initial = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    users.push({ nisn, password: 'siswa123', name, role: 'siswa', initial });
+                    localStorage.setItem('sipokar_users', JSON.stringify(users));
+                    showToastNotification(`Siswa baru berhasil diregistrasikan. Akun login otomatis dibuat (NISN: ${nisn} / Password: siswa123).`, 'success');
+                } else {
+                    showToastNotification('Siswa baru berhasil diregistrasikan.', 'success');
+                }
+            } else {
+                // Update Mode
+                const idx = students.findIndex(item => item.nisn === flag);
+                if (idx !== -1) {
+                    students[idx].name = name;
+                    students[idx].class = cls;
+                    showToastNotification('Berkas data siswa berhasil diperbarui.', 'success');
+                }
+
+                // SYNC: samakan nama di akun Manajemen User terkait
+                const uIdx = users.findIndex(u => u.nisn === flag);
+                if (uIdx !== -1) {
+                    users[uIdx].name = name;
+                    users[uIdx].initial = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    localStorage.setItem('sipokar_users', JSON.stringify(users));
+                }
+            }
+
+            localStorage.setItem('sipokar_students', JSON.stringify(students));
+            bootstrap.Modal.getInstance(document.getElementById('studentFormModal')).hide();
+            renderStudentCRUDTable();
+        }
+
+        function deleteStudentEntity(nisn) {
+            if (confirm('Apakah Anda yakin ingin menghapus siswa ini secara permanen dari sistem? Akun login, riwayat poin, dan tautan data orang tua terkait akan ikut terhapus.')) {
+                let students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+                students = students.filter(s => s.nisn !== nisn);
+                localStorage.setItem('sipokar_students', JSON.stringify(students));
+
+                // SYNC: cascade hapus akun login siswa & riwayat rekam poin terkait
+                let users = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+                users = users.filter(u => u.nisn !== nisn);
+                localStorage.setItem('sipokar_users', JSON.stringify(users));
+
+                let records = JSON.parse(localStorage.getItem('sipokar_records')) || [];
+                records = records.filter(r => r.nisn !== nisn);
+                localStorage.setItem('sipokar_records', JSON.stringify(records));
+
+                showToastNotification('Siswa beserta akun login dan riwayat poin terkait berhasil dihapus.', 'success');
+                renderStudentCRUDTable();
+            }
+        }
+
+        // ================= CRUD ENGINES: MASTER ATURAN POIN =================
+        function renderRuleCRUDTable() {
+            const rules = JSON.parse(localStorage.getItem('sipokar_rules')) || [];
+            const tbody = document.getElementById('ruleCRUDTableBody');
+            tbody.innerHTML = rules.map(r => `
+                <tr>
+                    <td class="fw-bold">${r.id}</td>
+                    <td><span class="badge ${r.type === 'prestasi' ? 'bg-success' : 'bg-danger'}">${r.type.toUpperCase()}</span></td>
+                    <td class="fw-medium">${r.name}</td>
+                    <td class="fw-bold">${r.points} Poin</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick="loadEditRule('${r.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRuleEntity('${r.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function launchRuleModal() {
+            document.getElementById('coreRuleForm').reset();
+            document.getElementById('coreRuleForm').classList.remove('was-validated');
+            document.getElementById('editRuleFlag').value = '';
+            document.getElementById('modalRuleId').disabled = false;
+            document.getElementById('ruleModalTitle').innerText = 'Tambah Butir Aturan';
+            new bootstrap.Modal(document.getElementById('ruleFormModal')).show();
+        }
+
+        function loadEditRule(id) {
+            const rules = JSON.parse(localStorage.getItem('sipokar_rules')) || [];
+            const r = rules.find(item => item.id === id);
+            if (r) {
+                document.getElementById('editRuleFlag').value = r.id;
+                document.getElementById('modalRuleId').value = r.id;
+                document.getElementById('modalRuleId').disabled = true;
+                document.getElementById('modalRuleType').value = r.type;
+                document.getElementById('modalRuleName').value = r.name;
+                document.getElementById('modalRulePoints').value = r.points;
+                document.getElementById('ruleModalTitle').innerText = 'Ubah Regulasi Poin';
+                new bootstrap.Modal(document.getElementById('ruleFormModal')).show();
+            }
+        }
+
+        function saveRuleEntity(e) {
+            e.preventDefault();
+            const form = document.getElementById('coreRuleForm');
+            if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
+
+            let rules = JSON.parse(localStorage.getItem('sipokar_rules')) || [];
+            const flag = document.getElementById('editRuleFlag').value;
+            const id = document.getElementById('modalRuleId').value;
+            const type = document.getElementById('modalRuleType').value;
+            const name = document.getElementById('modalRuleName').value;
+            const pts = parseInt(document.getElementById('modalRulePoints').value);
+
+            if (flag === '') {
+                if(rules.some(item => item.id === id)) {
+                    showToastNotification('Kode ID Aturan sudah terpakai.', 'danger'); return;
+                }
+                rules.push({ id, type, name, points: pts });
+                showToastNotification('Butir regulasi berhasil ditambahkan ke sistem.', 'success');
+            } else {
+                const idx = rules.findIndex(item => item.id === flag);
+                if (idx !== -1) {
+                    rules[idx].type = type;
+                    rules[idx].name = name;
+                    rules[idx].points = pts;
+                    showToastNotification('Butir aturan berhasil dikonfigurasi ulang.', 'success');
+                }
+            }
+            localStorage.setItem('sipokar_rules', JSON.stringify(rules));
+            bootstrap.Modal.getInstance(document.getElementById('ruleFormModal')).hide();
+            renderRuleCRUDTable();
+        }
+
+        function deleteRuleEntity(id) {
+            if(confirm('Hapus butir regulasi poin ini?')) {
+                let rules = JSON.parse(localStorage.getItem('sipokar_rules')) || [];
+                rules = rules.filter(item => item.id !== id);
+                localStorage.setItem('sipokar_rules', JSON.stringify(rules));
+                showToastNotification('Aturan berhasil dimusnahkan.', 'success');
+                renderRuleCRUDTable();
+            }
+        }
+
+        // ================= CRUD ENGINES: MANAJEMEN USER =================
+        function renderUserCRUDTable() {
+            const users = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+            const tbody = document.getElementById('userCRUDTableBody');
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td class="fw-bold">${u.name}</td>
+                    <td class="fw-medium text-secondary">${u.username || u.nisn}</td>
+                    <td><span class="badge bg-secondary text-capitalize">${u.role}</span></td>
+                    <td><code>${u.password}</code></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick="loadEditUser('${u.username || u.nisn}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUserEntity('${u.username || u.nisn}')"><i class="fa-solid fa-user-minus"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Menampilkan/menyembunyikan field Kelas (siswa) atau Anak Terhubung (ortu) sesuai peran dipilih
+        function toggleUserRoleFields() {
+            const role = document.getElementById('modalUserRole').value;
+            document.getElementById('userClassField').style.display = (role === 'siswa') ? 'block' : 'none';
+            document.getElementById('userChildField').style.display = (role === 'orangtua') ? 'block' : 'none';
+
+            if (role === 'orangtua') {
+                const students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+                const sel = document.getElementById('modalUserChildNisn');
+                sel.innerHTML = students.map(s => `<option value="${s.nisn}">${s.name} (${s.nisn} - ${s.class})</option>`).join('');
+            }
+        }
+
+        function launchUserModal() {
+            document.getElementById('coreUserForm').reset();
+            document.getElementById('coreUserForm').classList.remove('was-validated');
+            document.getElementById('editUserFlag').value = '';
+            document.getElementById('modalUserIdentifier').disabled = false;
+            document.getElementById('userModalTitle').innerText = 'Registrasi Akun Pengguna';
+            toggleUserRoleFields();
+            new bootstrap.Modal(document.getElementById('userFormModal')).show();
+        }
+
+        function loadEditUser(ident) {
+            const users = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+            const u = users.find(item => (item.username === ident || item.nisn === ident));
+            if (!u) return;
+
+            document.getElementById('coreUserForm').reset();
+            document.getElementById('coreUserForm').classList.remove('was-validated');
+            document.getElementById('editUserFlag').value = ident;
+            document.getElementById('modalUserName').value = u.name;
+            document.getElementById('modalUserIdentifier').value = u.username || u.nisn;
+            document.getElementById('modalUserIdentifier').disabled = true; // identitas tidak boleh diubah agar relasi data tetap konsisten
+            document.getElementById('modalUserRole').value = u.role;
+            document.getElementById('modalUserPassword').value = u.password;
+            toggleUserRoleFields();
+
+            if (u.role === 'siswa') {
+                const students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+                const s = students.find(item => item.nisn === u.nisn);
+                if (s) document.getElementById('modalUserClass').value = s.class;
+            } else if (u.role === 'orangtua') {
+                document.getElementById('modalUserChildNisn').value = u.targetNisn || '';
+            }
+
+            document.getElementById('userModalTitle').innerText = 'Ubah Akun Pengguna';
+            new bootstrap.Modal(document.getElementById('userFormModal')).show();
+        }
+
+        function saveUserEntity(e) {
+            e.preventDefault();
+            const form = document.getElementById('coreUserForm');
+            if(!form.checkValidity()) { form.classList.add('was-validated'); return; }
+
+            let users = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+            let students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const flag = document.getElementById('editUserFlag').value;
+            const name = document.getElementById('modalUserName').value;
+            const ident = document.getElementById('modalUserIdentifier').value;
+            const role = document.getElementById('modalUserRole').value;
+            const pwd = document.getElementById('modalUserPassword').value;
+            const initial = name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+
+            if (flag === '') {
+                // Insert Mode — cek duplikasi identitas
+                if (users.some(u => (u.username === ident || u.nisn === ident))) {
+                    showToastNotification('Gagal! Username/NISN sudah terdaftar sebagai akun lain.', 'danger');
+                    return;
+                }
+
+                let newUser = { name, password: pwd, role, initial };
+                if (role === 'siswa') {
+                    if (!/^[0-9]{10}$/.test(ident)) {
+                        showToastNotification('NISN siswa wajib berupa 10 digit angka.', 'danger');
+                        return;
+                    }
+                    newUser.nisn = ident;
+                    // SYNC: otomatis buat profil poin siswa jika belum ada di Kelola Siswa
+                    if (!students.some(s => s.nisn === ident)) {
+                        const cls = document.getElementById('modalUserClass').value;
+                        students.push({ nisn: ident, name, class: cls, points: 100, status: calculateCharacterStatus(100) });
+                        localStorage.setItem('sipokar_students', JSON.stringify(students));
+                    }
+                } else {
+                    newUser.username = ident;
+                    if (role === 'orangtua') {
+                        newUser.targetNisn = document.getElementById('modalUserChildNisn').value;
+                    }
+                }
+
+                users.push(newUser);
+                showToastNotification('Pengguna akses baru berhasil diaktifkan dan tersinkron ke seluruh dashboard.', 'success');
+            } else {
+                // Update Mode
+                const idx = users.findIndex(u => (u.username === flag || u.nisn === flag));
+                if (idx !== -1) {
+                    users[idx].name = name;
+                    users[idx].password = pwd;
+                    users[idx].initial = initial;
+                    if (users[idx].role === 'orangtua') {
+                        users[idx].targetNisn = document.getElementById('modalUserChildNisn').value;
+                    }
+
+                    // SYNC: perbarui nama profil siswa terkait bila peran siswa
+                    if (users[idx].role === 'siswa') {
+                        const sIdx = students.findIndex(s => s.nisn === users[idx].nisn);
+                        const cls = document.getElementById('modalUserClass').value;
+                        if (sIdx !== -1) {
+                            students[sIdx].name = name;
+                            students[sIdx].class = cls;
+                            localStorage.setItem('sipokar_students', JSON.stringify(students));
+                        }
+                    }
+                    showToastNotification('Data akun pengguna berhasil diperbarui.', 'success');
+                }
+            }
+
+            localStorage.setItem('sipokar_users', JSON.stringify(users));
+            bootstrap.Modal.getInstance(document.getElementById('userFormModal')).hide();
+            renderUserCRUDTable();
+        }
+
+        function deleteUserEntity(ident) {
+            if(confirm('Cabut akses login pengguna ini? Jika berperan sebagai siswa, profil poin karakter dan riwayatnya akan ikut terhapus.')) {
+                let users = JSON.parse(localStorage.getItem('sipokar_users')) || [];
+                const target = users.find(u => (u.username === ident || u.nisn === ident));
+                users = users.filter(u => (u.username !== ident && u.nisn !== ident));
+                localStorage.setItem('sipokar_users', JSON.stringify(users));
+
+                // SYNC: cascade hapus profil siswa & riwayat rekam poin bila peran siswa
+                if (target && target.role === 'siswa') {
+                    let students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+                    students = students.filter(s => s.nisn !== target.nisn);
+                    localStorage.setItem('sipokar_students', JSON.stringify(students));
+
+                    let records = JSON.parse(localStorage.getItem('sipokar_records')) || [];
+                    records = records.filter(r => r.nisn !== target.nisn);
+                    localStorage.setItem('sipokar_records', JSON.stringify(records));
+                }
+
+                showToastNotification('Akses pengguna berhasil dicabut.', 'success');
+                renderUserCRUDTable();
+                if (document.getElementById('tab-student').style.display !== 'none') renderStudentCRUDTable();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiPoKar - Portal Monitoring Wali Murid</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar Workspace Navigation -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-mark"><i class="fa-solid fa-graduation-cap text-white"></i></div>
+                <div>
+                    <h4 class="fw-bold mb-0 text-white" style="font-size:1.05rem;">SiPoKar</h4>
+                    <small>Portal Orang Tua</small>
+                </div>
+            </div>
+            <div class="menu-section-label">Menu Utama</div>
+            <ul class="list-unstyled components">
+                <li class="active"><a href="dashboard-orangtua.html"><i class="fa-solid fa-users"></i> Perkembangan Anak</a></li>
+                <li><a href="#" onclick="handleSessionLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar Portal</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="sidebar-school-card">
+                    <i class="fa-solid fa-school"></i>
+                    <div>
+                        <small>Tahun Ajaran 2025/2026</small>
+                        <strong>SMP Harapan Bangsa</strong>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="flex-grow-1 p-4 app-main-content" style="max-height: 100vh; overflow-y: auto;">
+
+            <!-- Navbar Header Tracker -->
+            <div class="app-navbar d-flex justify-content-between align-items-center mb-4 fade-in-up">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="btn btn-light" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="navbar-search d-none d-md-block">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Cari sesuatu...">
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="navbar-datetime d-none d-lg-block">
+                        <strong id="navbarClock">--:--</strong>
+                        <span id="navbarDate">Memuat tanggal...</span>
+                    </div>
+                    <button class="navbar-icon-btn" type="button">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="ping-dot"></span>
+                    </button>
+                    <div class="navbar-profile">
+                        <div class="avatar-initial" id="ortuAvatarInitial">BP</div>
+                        <div class="profile-meta d-none d-md-block">
+                            <strong id="ortuGreetingLabel">Selamat Hari</strong>
+                            <small>Orang Tua</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Target Child Identity Dashboard Banner -->
+            <div class="card card-custom p-4 bg-white border-0 shadow-sm mb-4">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 rounded-4 bg-primary text-white me-3">
+                        <i class="fa-solid fa-id-card fa-xl"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted text-uppercase fw-bold">Peserta Didik dalam Pengawasan Anda:</small>
+                        <h4 class="fw-bold text-dark mb-0" id="childIdentityLabel">Nama Anak (Kelas)</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Information Widgets -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 text-center bg-white h-100 justify-content-center">
+                        <small class="text-muted text-uppercase fw-bold">Skor Karakter Aktual Anak</small>
+                        <h1 class="display-3 fw-bold text-primary my-2" id="childPointsWidget">100</h1>
+                        <div><span class="badge px-3 py-2 fs-6" id="childStatusWidget">Memuat</span></div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card card-custom p-4 bg-white h-100 justify-content-between">
+                        <div>
+                            <h5 class="fw-bold mb-2"><i class="fa-solid fa-handshake-angle text-info me-2"></i>Rekomendasi Sinergi Orang Tua</h5>
+                            <p class="text-secondary lh-base mb-0 fs-6" id="childGuidanceNarrative">Memuat saran...</p>
+                        </div>
+                        <div id="childProgressWrap" class="mt-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span class="text-muted fw-medium" id="childProgressLabel">Progres menuju status berikutnya</span>
+                                <span class="fw-bold text-primary" id="childProgressPercent">0%</span>
+                            </div>
+                            <div class="progress" style="height: 10px; border-radius: 20px;">
+                                <div class="progress-bar bg-primary" id="childProgressBar" role="progressbar" style="width: 0%; border-radius: 20px;"></div>
+                            </div>
+                        </div>
+                        <hr class="text-muted my-3">
+                        <div class="row text-center">
+                            <div class="col-6 border-end">
+                                <small class="text-muted d-block mb-1">Prestasi yang Diraih</small>
+                                <span class="fw-bold text-success fs-5" id="childCountPrestasi">0 Item</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block mb-1">Pelanggaran Tercatat</small>
+                                <span class="fw-bold text-danger fs-5" id="childCountPelanggaran">0 Kasus</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Personal Tables Log -->
+            <div class="card card-custom p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-clock-history text-primary me-2"></i>Lembar Transparansi Log Aktivitas Anak</h5>
+                    <button class="btn btn-sm btn-outline-danger" onclick="alert('Simulasi download dokumen PDF resmi berhasil dikirim ke email terdaftar.')">
+                        <i class="fa-solid fa-file-pdf me-1"></i> Unduh Laporan Resmi
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tanggal Lapor</th>
+                                <th>Kategori Sifat</th>
+                                <th>Uraian Peraturan Karakter</th>
+                                <th>Bobot Nilai</th>
+                                <th>Aparatur Pelapor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="childHistoryLogBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="assets/js/db.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const session = JSON.parse(localStorage.getItem('sipokar_session'));
+            if (!session || session.role !== 'orangtua') {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('ortuGreetingLabel').innerText = `${getTimeGreeting()}, Bp/Ibu ${session.name}`;
+            document.getElementById('ortuAvatarInitial').innerText = session.initial;
+
+            buildOrangtuaPortal(session.targetNisn);
+        });
+
+        function buildOrangtuaPortal(targetNisn) {
+            const students = JSON.parse(localStorage.getItem('sipokar_students')) || [];
+            const child = students.find(s => s.nisn === targetNisn);
+            const records = JSON.parse(localStorage.getItem('sipokar_records')) || [];
+            const childRecords = records.filter(r => r.nisn === targetNisn);
+
+            if(child) {
+                document.getElementById('childIdentityLabel').innerText = `${child.name} — Rombel Kelas ${child.class}`;
+                document.getElementById('childPointsWidget').innerText = child.points;
+                
+                const badge = document.getElementById('childStatusWidget');
+                badge.innerText = child.status;
+                badge.className = `badge px-3 py-2 fs-6 ${getStatusBadgeClass(child.status)}`;
+
+                const narrative = document.getElementById('childGuidanceNarrative');
+                if(child.points >= 140) narrative.innerText = 'Putra/putri Anda menunjukkan keteladanan budi pekerti yang luar biasa luhur di sekolah. Kami sangat mengapresiasi pola asuh positif Bapak/Ibu di rumah.';
+                else if(child.points >= 100) narrative.innerText = 'Perkembangan kepribadian anak sangat bagus dan taat pada seluruh tata tertib sekolah. Berikan apresiasi pujian kecil di rumah agar motivasi belajarnya konsisten.';
+                else if(child.points >= 75) narrative.innerText = 'Skor anak dalam batas normal normatif. Tetap ingatkan anak secara berkala untuk bijak memilih pergaulan sebaya di luar jam sekolah.';
+                else narrative.innerText = 'Perhatian Khusus: Terjadi penurunan drastis pada indeks poin karakter putra/putri Anda akibat pelanggaran tertulis. Dimohon kerja sama Bapak/Ibu untuk meluangkan waktu berdiskusi mendalam bersama kami di ruang BK.';
+
+                // Widget progres menuju status berikutnya
+                const info = getNextStatusInfo(child.points);
+                const progLabel = document.getElementById('childProgressLabel');
+                const progPercent = document.getElementById('childProgressPercent');
+                const progBar = document.getElementById('childProgressBar');
+                if (info.nextStatus) {
+                    progLabel.innerText = `Butuh ${info.pointsNeeded} poin lagi menuju status "${info.nextStatus}"`;
+                } else {
+                    progLabel.innerText = 'Ananda telah mencapai status karakter tertinggi: Teladan';
+                }
+                progPercent.innerText = `${info.percent}%`;
+                progBar.style.width = `${info.percent}%`;
+            } else {
+                document.getElementById('childIdentityLabel').innerText = 'Data anak tidak ditemukan';
+                document.getElementById('childGuidanceNarrative').innerText = 'Profil anak belum tersedia atau telah dihapus dari sistem. Silakan hubungi pihak sekolah.';
+            }
+
+            const pCount = childRecords.filter(r => r.type === 'prestasi').length;
+            const lCount = childRecords.filter(r => r.type === 'pelanggaran').length;
+            document.getElementById('childCountPrestasi').innerText = `${pCount} Penghargaan`;
+            document.getElementById('childCountPelanggaran').innerText = `${lCount} Pelanggaran`;
+
+            // Table Builder
+            const tbody = document.getElementById('childHistoryLogBody');
+            if(childRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada rekam mutasi tindakan karakter yang tercatat.</td></tr>`;
+            } else {
+                tbody.innerHTML = childRecords.reverse().map(r => `
+                    <tr class="fade-in-up">
+                        <td class="fw-medium">${r.date}</td>
+                        <td><span class="badge ${r.type==='prestasi'?'bg-success':'bg-danger'}">${r.type.toUpperCase()}</span></td>
+                        <td><div class="fw-bold">${r.ruleName}</div><small class="text-muted">${r.note}</small></td>
+                        <td class="fw-bold ${r.type==='prestasi'?'text-success':'text-danger'}">${r.type==='prestasi'?'+':'-'}${r.points}</td>
+                        <td><small class="text-secondary">${r.inputBy}</small></td>
+                    </tr>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+</html>
